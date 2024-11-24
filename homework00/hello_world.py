@@ -1,2 +1,5 @@
+"function returns 'message'"
+
 def text():
-    return message
+    "returning"
+    return "message"
