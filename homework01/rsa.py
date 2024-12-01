@@ -1,3 +1,4 @@
+""" RSA Шифрование"""
 import random
 import typing as tp
 
@@ -45,8 +46,20 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     >>> multiplicative_inverse(7, 40)
     23
     """
-    # PUT YOUR CODE HERE
-    pass
+    original_phi = phi
+    x0, x1 = 0, 1
+    y0, y1 = 1, 0
+
+    while e != 0:
+        q = phi // e
+        phi, e = e, phi % e
+        x0, x1 = x1, x0 - q * x1
+        y0, y1 = y1, y0 - q * y1
+
+    if phi != 1:
+        raise ValueError("Multiplicative inverse does not exist")
+
+    return x0 % original_phi
 
 
 def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
@@ -56,11 +69,9 @@ def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[in
         raise ValueError("p and q cannot be equal")
 
     # n = pq
-    # PUT YOUR CODE HERE
     n = p * q
 
     # phi = (p-1)(q-1)
-    # PUT YOUR CODE HERE
     phi = (p - 1) * (q - 1)
 
     # Choose an integer e such that e and phi(n) are coprime
@@ -94,7 +105,7 @@ def decrypt(pk: tp.Tuple[int, int], ciphertext: tp.List[int]) -> str:
     # Unpack the key into its components
     key, n = pk
     # Generate the plaintext based on the ciphertext and key using a^b mod m
-    plain = [chr((char ** key) % n) for char in ciphertext]
+    plain = [chr((char**key) % n) for char in ciphertext]
     # Return the array of bytes as a string
     return "".join(plain)
 
